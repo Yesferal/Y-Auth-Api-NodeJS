@@ -22,28 +22,32 @@ Init TSC, this is going to create a `tsconfig.json` file that we should modify.
 tsc --init 
 ```
 
-We will replace es2016 with 
-es5 in the target key. Also, we will uncomment:
+We will uncomment:
 
 ```
-"incremental": true,
-```
-```
-"declaration": true,
+"sourceMap": true
 ```
 
-We should uncomment the next line inside the `tsconfig.json` file in order to get a custom JS and TS performance.
+We should uncomment the next lines inside the `tsconfig.json` file in order to get a custom JS and TS performance.
 ```
-"outDir": "lib",
+"outDir": "./dist",
 ```
 
-and append the `include` block after `compilerOptions` block.
+This one is important becuase it let us have a correctly nested .js files exactly like .ts files were nested.
+```
+"rootDir": "./src",
+```
+
+Also, you could append the `include` & `exclude` block after `compilerOptions` block.
 ```
 "compilerOptions": {
      ...
 },
 "include": [
-    "src"
+    "src/**/*.ts" /* Include every ts file in source folder */
+],
+"exclude": [
+    "node_modules" /* Exclude everything in node_modules */
 ]
 ```
 
