@@ -1,0 +1,15 @@
+{
+  "name": "y-auth-api-nodejs",
+  "version": "0.0.1",
+  "description": "This is an authentication express app used in all Yesferal Cueva projects.",
+  "main": "server.js",
+  "scripts": {
+    "build:dev": "tsc --watch --preserveWatchOutput",
+    "start:dev": "nodemon --require dotenv/config dist/presentation/server.js",
+    "dev": "concurrently \"npm:build:dev\" \"npm:start:dev\"",
+    "build": "npx tsc",
+    "start": "node dist/presentation/server.js"
+  },
+  "author": "Yesferal Cueva",
+  "license": "ISC"
+}
