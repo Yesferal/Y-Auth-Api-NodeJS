@@ -1,12 +1,11 @@
 /* Copyright © 2024 Yesferal Cueva. All rights reserved. */
 
-import express, { Express, Request, Response } from "express"
 import { AuthEnv } from 'y-auth-nodejs/lib/di/auth.env'
 import { PublicEnv } from "../env/public.env"
 import { PrivateEnv } from "../env/private.env"
+import { Di } from "../di/di"
 import { AuthNodePackage } from "y-auth-nodejs/lib/framework/node/auth.node.package"
-
-const app: Express = express()
+import { ExpressServerBuilder } from "../framework/express/express.server.builder"
 
 /**
  * Public Environment Variables
@@ -39,13 +38,13 @@ const authEnv: AuthEnv = {
     EMAIL_PASS: process.env.EMAIL_PASS || ''
 }
 
-app.get("/", (req: Request, res: Response) => {
-    res.status(200).json({
-        message: `Howdy. I am alive!`,
-        envVar: env
-    })
-})
+const di = new Di(env, privateEnv, authEnv)
 
-app.listen(env.PORT, () => {
-    console.log(`[server]: Server is running at http://localhost:${env.PORT}`)
-})
+new ExpressServerBuilder()
+    .withPort(env.PORT)
+    .withMiddleware(di.resolveMiddleware())
+    .register('/', di.resolveExpressFacade().getHelloWorld(env))
+    .registerPrivate('/passwordless_login', di.resolveExpressFacade().getPasswordlessLogin())
+    .registerPrivate('/get_refresh_token', di.resolveExpressFacade().getRefreshToken())
+    .registerPrivate('/get_access_token', di.resolveExpressFacade().getAccessToken())
+    .build()
