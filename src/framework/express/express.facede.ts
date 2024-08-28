@@ -45,14 +45,27 @@ export class ExpressFacade {
                     return
                 }
 
-                this.passwordlessLoginUseCase.execute(appColor, appName, email)
+                const responseModel = await this.passwordlessLoginUseCase.execute(appColor, appName, email)
 
-                const locale = req.query.language?.toString()
-                const expressResponse: ExpressResponse = {
-                    message: this.pickSuccessMessageBy(locale).successPasswordlessLogin
+                switch (true) {
+                    case responseModel instanceof SuccessResponseModel: {
+                        const locale = req.query.language?.toString()
+                        const expressResponse: ExpressResponse = {
+                            message: responseModel.value ? responseModel.value : this.pickSuccessMessageBy(locale).successPasswordlessLogin
+                        }
+
+                        this.sendSuccessfulResponse(res, expressResponse)
+                        break
+                    }
+                    case responseModel instanceof ErrorResponseModel: {
+                        this.sendErrorResponse(res, responseModel)
+                        break
+                    }
+                    default: {
+                        this.sendErrorResponse(res, { message: ErrorMessage.BadResponseModelUndefined })
+                        break
+                    }
                 }
-
-                this.sendSuccessfulResponse(res, expressResponse)
             } catch (e) {
                 console.log(e)
                 this.sendErrorResponse(res, { message: ErrorMessage.BadRequest })
