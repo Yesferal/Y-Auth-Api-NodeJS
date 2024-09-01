@@ -1,10 +1,10 @@
 /* Copyright © 2024 Yesferal Cueva. All rights reserved. */
 
-import { AuthEnv } from 'y-auth-nodejs/lib/di/auth.env'
+import { AuthEnv } from 'y-auth-core-nodejs/lib/di/auth.env'
 import { PublicEnv } from "../env/public.env"
 import { PrivateEnv } from "../env/private.env"
 import { Di } from "../di/di"
-import { AuthNodePackage } from "y-auth-nodejs/lib/framework/node/auth.node.package"
+import { AuthNodePackage } from "y-auth-core-nodejs/lib/framework/node/auth.node.package"
 import { ExpressServerBuilder } from "../framework/express/express.server.builder"
 
 /**

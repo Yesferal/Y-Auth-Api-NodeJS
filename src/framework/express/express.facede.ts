@@ -2,10 +2,10 @@
 
 import { Request, Response, Router } from "express"
 import { PublicEnv } from "../../env/public.env"
-import { PasswordlessLoginUseCase } from "y-auth-nodejs/lib/domain/usecase/auth.passwordless.login.usecase"
-import { GetRefreshTokenUseCase } from "y-auth-nodejs/lib/domain/usecase/auth.get.refresh.token.usecase"
-import { GetAccessTokenUseCase } from "y-auth-nodejs/lib/domain/usecase/auth.get.access.token.usecase"
-import { ErrorResponseModel, SuccessResponseModel } from "y-auth-nodejs/lib/domain/model/response.model"
+import { PasswordlessLoginUseCase } from "y-auth-core-nodejs/lib/domain/usecase/auth.passwordless.login.usecase"
+import { GetRefreshTokenUseCase } from "y-auth-core-nodejs/lib/domain/usecase/auth.get.refresh.token.usecase"
+import { GetAccessTokenUseCase } from "y-auth-core-nodejs/lib/domain/usecase/auth.get.access.token.usecase"
+import { ErrorResponseModel, SuccessResponseModel } from "y-auth-core-nodejs/lib/domain/model/response.model"
 import { ErrorMessage } from "./model/http.error.message"
 import { SuccessMessage, SuccessMessageEn, SuccessMessageEs } from "./model/http.success.message"
 
