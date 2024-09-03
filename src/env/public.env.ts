@@ -3,5 +3,7 @@
 export interface PublicEnv {
     PORT: string,
     APP_VERSION: string,
-    CORE_VERSION: string
+    CORE_VERSION: string,
+    REQUEST_LIMIT: number,
+    REQUEST_WINDOW: number
 }

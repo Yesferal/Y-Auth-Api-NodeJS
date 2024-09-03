@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
     "y-auth-core-nodejs": "^1.0.2"
   }
 }

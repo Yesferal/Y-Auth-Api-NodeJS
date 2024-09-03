@@ -1,6 +1,6 @@
 /* Copyright © 2024 Yesferal Cueva. All rights reserved. */
 
-import express, { Express, Router } from 'express'
+import express, { Express, RequestHandler, Router } from 'express'
 import { Middleware } from '../../presentation/middleware/middleware'
 
 export class ExpressServerBuilder {
@@ -24,6 +24,16 @@ export class ExpressServerBuilder {
         middleware: Middleware
     ): ExpressServerBuilder {
         this.middleware = middleware
+
+        return this
+    }
+
+    withRequestHandler(
+        requestHandler: RequestHandler
+    ): ExpressServerBuilder {
+        if (requestHandler) {
+            this.betApp.use(requestHandler)
+        }
 
         return this
     }

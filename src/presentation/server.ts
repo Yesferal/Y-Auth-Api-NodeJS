@@ -13,7 +13,9 @@ import { ExpressServerBuilder } from "../framework/express/express.server.builde
 const env: PublicEnv = {
     PORT: process.env.PORT || '',
     APP_VERSION: process.env.npm_package_version || '',
-    CORE_VERSION: new AuthNodePackage().getVersion()
+    CORE_VERSION: new AuthNodePackage().getVersion(),
+    REQUEST_LIMIT: Number(process.env.REQUEST_LIMIT) || 15,
+    REQUEST_WINDOW: Number(process.env.REQUEST_WINDOW) || 5
 }
 
 /**
@@ -43,6 +45,7 @@ const di = new Di(env, privateEnv, authEnv)
 new ExpressServerBuilder()
     .withPort(env.PORT)
     .withMiddleware(di.resolveMiddleware())
+    .withRequestHandler(di.resolveRateLimitBuilder().build())
     .register('/', di.resolveExpressFacade().getHelloWorld(env))
     .registerPrivate('/passwordless_login', di.resolveExpressFacade().getPasswordlessLogin())
     .registerPrivate('/get_refresh_token', di.resolveExpressFacade().getRefreshToken())

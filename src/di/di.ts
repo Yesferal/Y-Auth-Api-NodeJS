@@ -7,6 +7,7 @@ import { PublicEnv } from '../env/public.env'
 import { AuthNodePackage } from 'y-auth-core-nodejs/lib/framework/node/auth.node.package'
 import { ExpressFacade } from '../framework/express/express.facede'
 import { Middleware } from '../presentation/middleware/middleware'
+import { RateLimitBuilder } from '../framework/rate_limit/rate.limit.builder'
 
 export class Di {
     /**
@@ -23,6 +24,13 @@ export class Di {
     private middleware: Middleware | undefined
     resolveMiddleware() {
         return this.middleware || (this.middleware = new Middleware(this.privateEnv.Y_AUTH_SECRET_KEY, [this.privateEnv.Y_AUTH_CHALKBET_SECRET_VALUE]))
+    }
+
+    private rateLimitBuilder: RateLimitBuilder | undefined
+    resolveRateLimitBuilder() {
+        return this.rateLimitBuilder || (this.rateLimitBuilder = new RateLimitBuilder()
+        .withLimit(this.publicEnv.REQUEST_LIMIT)
+        .withWindow(this.publicEnv.REQUEST_WINDOW))
     }
 
     private expressFacade: ExpressFacade | undefined
