@@ -8,6 +8,7 @@ import { AuthNodePackage } from 'y-auth-core-nodejs/lib/framework/node/auth.node
 import { ExpressFacade } from '../framework/express/express.facede'
 import { Middleware } from '../presentation/middleware/middleware'
 import { RateLimitBuilder } from '../framework/rate_limit/rate.limit.builder'
+import { HelmetBuilder } from '../framework/helmet/helmet.builder'
 
 export class Di {
     /**
@@ -36,5 +37,10 @@ export class Di {
     private expressFacade: ExpressFacade | undefined
     resolveExpressFacade(): ExpressFacade {
         return this.expressFacade || (this.expressFacade = new ExpressFacade(this.authDi?.resolvePasswordlessLoginUseCase(), this.authDi?.resolveGetRefreshTokenUseCase(), this.authDi?.resolveGetAccessTokenUseCase()))
+    }
+
+    private helmetBuilder: HelmetBuilder | undefined
+    resolveHelmetBuilder(): HelmetBuilder {
+        return this.helmetBuilder || (this.helmetBuilder = new HelmetBuilder())
     }
 }

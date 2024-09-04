@@ -29,7 +29,7 @@ export class ExpressServerBuilder {
     }
 
     withRequestHandler(
-        requestHandler: RequestHandler
+        requestHandler: RequestHandler[]
     ): ExpressServerBuilder {
         if (requestHandler) {
             this.betApp.use(requestHandler)
