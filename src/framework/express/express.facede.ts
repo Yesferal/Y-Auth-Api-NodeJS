@@ -169,6 +169,7 @@ export class ExpressFacade {
         const statusCode = errorResponseModel.code != undefined ? errorResponseModel.code : 400
 
         res.status(statusCode).json({
+            statusCode: statusCode,
             message: errorResponseModel.message,
             longDescription: errorResponseModel.longDescription
         })

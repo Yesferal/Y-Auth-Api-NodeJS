@@ -14,10 +14,10 @@ export class Middleware {
     ) => {
         const authorization = request.header(this.key)
         if (!authorization) {
-            return response.status(401).json({ message: ErrorMessage.Unauthorized })
+            return response.status(403).json({ message: ErrorMessage.Forbidden })
         }
         if (!this.secrets.some(s => s === authorization)) {
-            return response.status(401).json({ message: ErrorMessage.Unauthorized })
+            return response.status(403).json({ message: ErrorMessage.Forbidden })
         }
 
         return next()
