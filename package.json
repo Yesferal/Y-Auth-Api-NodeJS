@@ -1,6 +1,6 @@
 {
   "name": "y-auth-api-nodejs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "This is an authentication express app used in all Yesferal Cueva projects.",
   "main": "server.js",
   "scripts": {
