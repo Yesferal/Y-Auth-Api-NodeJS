@@ -2,10 +2,12 @@
 
 interface ExpressResponse {
     message: string
+    email?: string
     expressToken?: ExpressToken
 }
 
 interface ExpressToken {
     refreshToken?: string
-    accessToken?: string
+    accessToken?: string,
+    expiredIn?: string
 }

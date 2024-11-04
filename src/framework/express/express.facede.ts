@@ -11,6 +11,10 @@ import { SuccessMessage, SuccessMessageEn, SuccessMessageEs } from "./model/http
 
 export class ExpressFacade {
 
+    refreshTokenExpiredIn = "30d"
+
+    accessTokenExpiredIn = "15m"
+
     constructor(
         private passwordlessLoginUseCase: PasswordlessLoginUseCase,
         private getRefreshTokenUseCase: GetRefreshTokenUseCase,
@@ -87,11 +91,15 @@ export class ExpressFacade {
                     return
                 }
 
-                const refreshResponseModel = await this.getRefreshTokenUseCase.execute(email, authCode, deviceId, appPackageName, "30d")
+                const refreshResponseModel = await this.getRefreshTokenUseCase.execute(email, authCode, deviceId, appPackageName, this.refreshTokenExpiredIn)
 
                 switch (true) {
                     case refreshResponseModel instanceof SuccessResponseModel: {
-                        this._getAccessToken(req, res, refreshResponseModel.value)
+                        if (refreshResponseModel.value) {
+                            this._getAccessToken(req, res, refreshResponseModel.value, this.accessTokenExpiredIn, email)
+                        } else {
+                            this.sendErrorResponse(res, { message: ErrorMessage.BadResponseModelUndefined })
+                        }
                         break
                     }
                     case refreshResponseModel instanceof ErrorResponseModel : {
@@ -116,7 +124,11 @@ export class ExpressFacade {
         }).get('/:refreshToken', async (req, res) => {
             try {
                 const refreshToken = req.query.refreshToken?.toString()
-                this._getAccessToken(req, res, refreshToken)
+                if (refreshToken) {
+                    this._getAccessToken(req, res, refreshToken, this.accessTokenExpiredIn)
+                } else {
+                    this.sendErrorResponse(res, { message: ErrorMessage.BadRequestMissingParameter + "RefreshToken" })
+                }
             } catch (e) {
                 console.log(e)
                 this.sendErrorResponse(res, { message: ErrorMessage.BadRequest })
@@ -124,22 +136,24 @@ export class ExpressFacade {
         })
     }
 
-    private async _getAccessToken(req: Request, res: Response, refreshToken?: string) {
+    private async _getAccessToken(req: Request, res: Response, refreshToken: string, expiredIn: string, email?: string) {
         if (!refreshToken) {
             this.sendErrorResponse(res, { message: ErrorMessage.BadRequestMissingParameter + `refreshToken` })
             return
         }
 
-        const responseModel = await this.getAccessTokenUseCase.execute(refreshToken, "15m")
+        const responseModel = await this.getAccessTokenUseCase.execute(refreshToken, expiredIn)
 
         switch (true) {
             case responseModel instanceof SuccessResponseModel: {
                 const locale = req.query.language?.toString()
                 const expressResponse: ExpressResponse = {
                     message: this.pickSuccessMessageBy(locale).successToken,
+                    email: email,
                     expressToken: {
                         refreshToken: refreshToken,
-                        accessToken: responseModel.value
+                        accessToken: responseModel.value,
+                        expiredIn: expiredIn
                     }
                 }
 
@@ -168,10 +182,6 @@ export class ExpressFacade {
     private sendErrorResponse(res: Response, errorResponseModel: ErrorResponseModel) {
         const statusCode = errorResponseModel.code != undefined ? errorResponseModel.code : 400
 
-        res.status(statusCode).json({
-            statusCode: statusCode,
-            message: errorResponseModel.message,
-            longDescription: errorResponseModel.longDescription
-        })
+        res.status(statusCode).json(errorResponseModel)
     }
 }
