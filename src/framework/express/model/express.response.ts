@@ -9,5 +9,5 @@ interface ExpressResponse {
 interface ExpressToken {
     refreshToken?: string
     accessToken?: string,
-    expiredIn?: string
+    expiredIn?: number
 }

@@ -11,9 +11,9 @@ import { SuccessMessage, SuccessMessageEn, SuccessMessageEs } from "./model/http
 
 export class ExpressFacade {
 
-    refreshTokenExpiredIn = "30d"
+    refreshTokenExpiredIn = 30 * 24 /* hours */ * 60 /* minutes */ * 60 /* seconds */ * 1000
 
-    accessTokenExpiredIn = "15m"
+    accessTokenExpiredIn = 15 /* minutes */ * 60 /* seconds */ * 1000
 
     constructor(
         private passwordlessLoginUseCase: PasswordlessLoginUseCase,
@@ -136,7 +136,7 @@ export class ExpressFacade {
         })
     }
 
-    private async _getAccessToken(req: Request, res: Response, refreshToken: string, expiredIn: string, email?: string) {
+    private async _getAccessToken(req: Request, res: Response, refreshToken: string, expiredIn: number, email?: string) {
         if (!refreshToken) {
             this.sendErrorResponse(res, { message: ErrorMessage.BadRequestMissingParameter + `refreshToken` })
             return
