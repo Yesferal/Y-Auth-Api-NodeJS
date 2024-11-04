@@ -87,7 +87,7 @@ export class ExpressFacade {
                     return
                 }
 
-                const refreshResponseModel = await this.getRefreshTokenUseCase.execute(email, authCode, deviceId, appPackageName)
+                const refreshResponseModel = await this.getRefreshTokenUseCase.execute(email, authCode, deviceId, appPackageName, "30d")
 
                 switch (true) {
                     case refreshResponseModel instanceof SuccessResponseModel: {
@@ -130,7 +130,7 @@ export class ExpressFacade {
             return
         }
 
-        const responseModel = await this.getAccessTokenUseCase.execute(refreshToken)
+        const responseModel = await this.getAccessTokenUseCase.execute(refreshToken, "15m")
 
         switch (true) {
             case responseModel instanceof SuccessResponseModel: {
