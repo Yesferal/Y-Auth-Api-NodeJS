@@ -11,9 +11,9 @@ import { SuccessMessage, SuccessMessageEn, SuccessMessageEs } from "./model/http
 
 export class ExpressFacade {
 
-    refreshTokenExpiredIn = 30 * 24 /* hours */ * 60 /* minutes */ * 60 /* seconds */ * 1000
+    refreshTokenExpiredIn = 0
 
-    accessTokenExpiredIn = 15 /* minutes */ * 60 /* seconds */ * 1000
+    accessTokenExpiredIn = 5 /* minutes */ * 60 /* seconds */ * 1000
 
     constructor(
         private passwordlessLoginUseCase: PasswordlessLoginUseCase,
