@@ -31,7 +31,7 @@ export class RateLimitBuilder {
             standardHeaders: 'draft-7', // add the `RateLimit-*` headers to the response
             legacyHeaders: false, // remove the `X-RateLimit-*` headers from the response
             handler: (req, res) => {
-                res.status(429).send(ErrorResponseModel.getTooManyRequestResponseWith('Too many requests, please try again later', "Plase try again later"))
+                res.status(429).send(ErrorResponseModel.getTooManyRequestResponseWith('Too many requests, please try again later', "Too many attempts. Please try again later"))
             },
         })
     }
