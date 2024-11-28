@@ -1,4 +1,7 @@
-### Release 1.0.1 --pending
+### Release 1.0.2 --pending
+
+### Release 1.0.1
+- Upgrade Core vession to 1.0.11 (& Add MessageResponse Model) (da4e566)
 
 ### Release 1.0.0
 - Add Trust Proxy feature (57bf1b4)
