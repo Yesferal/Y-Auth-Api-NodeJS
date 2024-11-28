@@ -7,6 +7,7 @@ import { GetRefreshTokenUseCase } from "y-auth-core-nodejs/lib/domain/usecase/au
 import { GetAccessTokenUseCase } from "y-auth-core-nodejs/lib/domain/usecase/auth.get.access.token.usecase"
 import { ErrorResponseModel, SuccessResponseModel } from "y-auth-core-nodejs/lib/domain/model/response.model"
 import { ErrorMessage } from "./model/http.error.message"
+import { ExpressResponse } from "./model/express.response"
 import { SuccessMessage, SuccessMessageEn, SuccessMessageEs } from "./model/http.success.message"
 
 export class ExpressFacade {
@@ -26,7 +27,7 @@ export class ExpressFacade {
             strict: true
         }).get("/", async (req, res) => {
             const locale = req.query.language?.toString()
-            
+
             var message: string = this.pickSuccessMessageBy(locale).successHelloWorld
 
             res.status(200).json({
@@ -45,7 +46,11 @@ export class ExpressFacade {
                 const appName = req.query.appName?.toString()
                 const email = req.query.email?.toString()
                 if (!appColor || !appName || !email) {
-                    this.sendErrorResponse(res, { message: ErrorMessage.BadRequestMissingParameter + "appColor or appName or email" })
+                    this.sendErrorResponse(res, {
+                        messages: {
+                            infoMessage: ErrorMessage.BadRequestMissingParameter + "appColor or appName or email"
+                        }
+                    })
                     return
                 }
 
@@ -55,7 +60,9 @@ export class ExpressFacade {
                     case responseModel instanceof SuccessResponseModel: {
                         const locale = req.query.language?.toString()
                         const expressResponse: ExpressResponse = {
-                            message: responseModel.value ? responseModel.value : this.pickSuccessMessageBy(locale).successPasswordlessLogin
+                            messages: {
+                                displayMessage: responseModel.value ? responseModel.value : this.pickSuccessMessageBy(locale).successPasswordlessLogin
+                            }
                         }
 
                         this.sendSuccessfulResponse(res, expressResponse)
@@ -66,13 +73,21 @@ export class ExpressFacade {
                         break
                     }
                     default: {
-                        this.sendErrorResponse(res, { message: ErrorMessage.BadResponseModelUndefined })
+                        this.sendErrorResponse(res, {
+                            messages: {
+                                infoMessage: ErrorMessage.BadResponseModelUndefined
+                            }
+                        })
                         break
                     }
                 }
             } catch (e) {
                 console.log(e)
-                this.sendErrorResponse(res, { message: ErrorMessage.BadRequest })
+                this.sendErrorResponse(res, {
+                    messages: {
+                        infoMessage: ErrorMessage.BadRequest
+                    }
+                })
             }
         })
     }
@@ -87,7 +102,11 @@ export class ExpressFacade {
                 const deviceId = req.query.deviceId?.toString()
                 const appPackageName = req.query.appPackageName?.toString()
                 if (!email || !authCode || !deviceId || !appPackageName) {
-                    this.sendErrorResponse(res, { message: ErrorMessage.BadRequestMissingParameter + `email or authCode or deviceId or appPackageName` })
+                    this.sendErrorResponse(res, {
+                        messages: {
+                            infoMessage: ErrorMessage.BadRequestMissingParameter + `email or authCode or deviceId or appPackageName`
+                        }
+                    })
                     return
                 }
 
@@ -98,22 +117,34 @@ export class ExpressFacade {
                         if (refreshResponseModel.value) {
                             this._getAccessToken(req, res, refreshResponseModel.value, this.accessTokenExpiredIn, email)
                         } else {
-                            this.sendErrorResponse(res, { message: ErrorMessage.BadResponseModelUndefined })
+                            this.sendErrorResponse(res, {
+                                messages: {
+                                    infoMessage: ErrorMessage.BadResponseModelUndefined
+                                }
+                            })
                         }
                         break
                     }
-                    case refreshResponseModel instanceof ErrorResponseModel : {
+                    case refreshResponseModel instanceof ErrorResponseModel: {
                         this.sendErrorResponse(res, refreshResponseModel)
                         break
                     }
                     default: {
-                        this.sendErrorResponse(res, { message: ErrorMessage.BadResponseModelUndefined })
+                        this.sendErrorResponse(res, {
+                            messages: {
+                                infoMessage: ErrorMessage.BadResponseModelUndefined
+                            }
+                        })
                         break
                     }
                 }
             } catch (e) {
                 console.log(e)
-                this.sendErrorResponse(res, { message: ErrorMessage.BadRequest })
+                this.sendErrorResponse(res, {
+                    messages: {
+                        infoMessage: ErrorMessage.BadRequest
+                    }
+                })
             }
         })
     }
@@ -127,18 +158,30 @@ export class ExpressFacade {
                 if (refreshToken) {
                     this._getAccessToken(req, res, refreshToken, this.accessTokenExpiredIn)
                 } else {
-                    this.sendErrorResponse(res, { message: ErrorMessage.BadRequestMissingParameter + "RefreshToken" })
+                    this.sendErrorResponse(res, {
+                        messages: {
+                            infoMessage: ErrorMessage.BadRequestMissingParameter + "RefreshToken"
+                        }
+                    })
                 }
             } catch (e) {
                 console.log(e)
-                this.sendErrorResponse(res, { message: ErrorMessage.BadRequest })
+                this.sendErrorResponse(res, {
+                    messages: {
+                        infoMessage: ErrorMessage.BadRequest
+                    }
+                })
             }
         })
     }
 
     private async _getAccessToken(req: Request, res: Response, refreshToken: string, expiredIn: number, email?: string) {
         if (!refreshToken) {
-            this.sendErrorResponse(res, { message: ErrorMessage.BadRequestMissingParameter + `refreshToken` })
+            this.sendErrorResponse(res, {
+                messages: {
+                    infoMessage: ErrorMessage.BadRequestMissingParameter + `refreshToken`
+                }
+            })
             return
         }
 
@@ -148,7 +191,9 @@ export class ExpressFacade {
             case responseModel instanceof SuccessResponseModel: {
                 const locale = req.query.language?.toString()
                 const expressResponse: ExpressResponse = {
-                    message: this.pickSuccessMessageBy(locale).successToken,
+                    messages: {
+                        infoMessage: this.pickSuccessMessageBy(locale).successToken,
+                    },
                     email: email,
                     expressToken: {
                         refreshToken: refreshToken,
@@ -165,7 +210,11 @@ export class ExpressFacade {
                 break
             }
             default: {
-                this.sendErrorResponse(res, { message: ErrorMessage.BadResponseModelUndefined })
+                this.sendErrorResponse(res, {
+                    messages: {
+                        infoMessage: ErrorMessage.BadResponseModelUndefined
+                    }
+                })
                 break
             }
         }
