@@ -117,6 +117,17 @@ Finally, start the Express server project
 npm run start
 ```
 
+## Bump version
+Update package.json version value and run install command to update package-lock.json version too
+```
+npm install
+```
+
+Get all the changes and put them on `CHANGELOG.md` file
+```
+git log --pretty="- %s (%h)"
+```
+
 ---
 ## License
 ```
