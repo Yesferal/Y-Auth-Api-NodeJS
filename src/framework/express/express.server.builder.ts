@@ -60,8 +60,22 @@ export class ExpressServerBuilder {
         return this
     }
 
+    registerRateLimit(requestHandler: RequestHandler, numberOfProxies: number) {
+        // TODO: Include this in the RateLimitBuilder
+        if (requestHandler) {
+            this.betApp.use(requestHandler)
+            this.betApp.set('trust proxy', numberOfProxies)
+            this.betApp.get('/ip', (request, response) => response.send(request.ip))
+            this.betApp.get('/x-forwarded-for', (request, response) => response.send(request.headers['x-forwarded-for']))
+        }  
+        // END RateLimitBuilder
+   
+        return this
+    }
+
     build(): Express {
         this.betApp.use(express.json())
+
         this.betApp.listen(this.port, () => {
             console.log(`ServerBuilder: Listening on port http://localhost:${this.port}`)
         })
